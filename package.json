@@ -1,6 +1,6 @@
 {
   "name": "swagger-ux",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Swagger UI for express and restify",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/anbuksv/docker-backup-restore.git"
+    "url": "https://github.com/anbuksv/swagger-ux.git"
   },
   "keywords": [
     "swagger-ui",
@@ -23,7 +23,7 @@
   "author": "Anbarasan K <anbuksv@gmail.com> (www.anbu2you.com)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/anbuksv/docker-backup-restore/issues"
+    "url": "https://github.com/anbuksv/swagger-ux/issues"
   },
-  "homepage": "https://github.com/anbuksv/docker-backup-restore#readme"
+  "homepage": "https://github.com/anbuksv/swagger-ux.git#readme"
 }
