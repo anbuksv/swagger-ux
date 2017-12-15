@@ -1,0 +1,29 @@
+{
+  "name": "swagger-ux",
+  "version": "1.0.0",
+  "description": "Swagger UI for express and restify",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anbuksv/docker-backup-restore.git"
+  },
+  "keywords": [
+    "swagger-ui",
+    "swagger-ux",
+    "swagger",
+    "UI",
+    "express",
+    "restify",
+    "redoc",
+    "documentation"
+  ],
+  "author": "Anbarasan K <anbuksv@gmail.com> (www.anbu2you.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anbuksv/docker-backup-restore/issues"
+  },
+  "homepage": "https://github.com/anbuksv/docker-backup-restore#readme"
+}
