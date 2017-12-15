@@ -39,12 +39,14 @@ Redoc is OpenAPI/Swagger-generated API Reference Documentation and it provides a
     }
     SwaggerUX.route(app,options);
     app.listen(3000)
+
 **Options**
 | key        |      value      | required  |      notes      |
 |:-------------:|:-------------:|:-----:|:---------------:|
-| filePath      |  absolute path of the swagger document file | true |
-| routePath     |  document url route path on server     |   false |default path **/api-docs**
+| filePath      |  absolute path of the swagger document file | true | |
+| routePath     |  document url route path on server     |   false |default path **/api-docs**|
 | auth | middleware function like authentication function     |  false | must be instanceof Function|
+
 
 **Open http://<app_host_url>:<app_port>/`api-docs` in your browser to view the documentation.**
 # Documentation UI
