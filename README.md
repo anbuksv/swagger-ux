@@ -7,46 +7,27 @@ Redoc is OpenAPI/Swagger-generated API Reference Documentation and it provides a
 # Install
 `$ npm install --save swagger-ux`
 # Usage
-***Restify setup***
-
-    var restify = require('restify');
-    const server = restify.createServer({
-        name: 'myapp',
-        version: '1.0.0'
-    });
+**Setup**
+``` javascript 
     const SwaggerUX = require('swagger-ux');
     const SwaggerDocumentPath = __dirname + "./swagger.yaml";
     const options = {
-        "filePath": SwaggerDocumentPath
+        "documentPath": SwaggerDocumentPath
     }
-    SwaggerUX.route(server,options);
-    server.listen(8080, function () {
-        console.log('%s listening at %s', server.name, server.url);
-    });
-
-***Express setup***
-
-    var express = require('express')
-    var app = express();
-    const SwaggerUX = require('swagger-ux');
-    const SwaggerDocumentPath = __dirname + "/swagger.yaml";
-    app.get('/', function (req, res) {
-        res.send('Hello World')
-    });
-    const options = {
-        "routePath":"/api-docs",
-        "filePath": SwaggerDocumentPath
-    }
-    SwaggerUX.route(app,options);
-    app.listen(3000)
+    SwaggerUX.route(server,options); 
+```
 
 **Options**
 
 | key|value|required|notes|
 |-------|------|-----|----|
-| filePath | absolute path of the swagger document file | true | |
+| **documentPath** or **documentUrl** | absolute path of the document file or document url` | true | *filePath deprecated|
+|title|string|false| html title|
+|defaultUI| **enum(** swagger,redoc **)** | false | default ui is swagger|
 | routePath     |  document url route path on server |false |default path **/api-docs**|
 | auth | middleware function like authentication function |  false | must be instanceof Function|
+|script| valid javascript|false|**Example:** *<script>alert('hello world');</script>*|
+|style| valid html style tag | false | |
 
 
 **Open http://<app_host_url>:<app_port>/`api-docs` in your browser to view the documentation.**

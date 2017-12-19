@@ -1,6 +1,6 @@
 {
   "name": "swagger-ux",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Swagger UI for express and restify",
   "main": "index.js",
   "scripts": {

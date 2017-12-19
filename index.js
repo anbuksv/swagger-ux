@@ -1,6 +1,20 @@
 'use strict'
+if (!String.prototype.quote){
+    String.prototype.quote = function(){
+        return JSON.stringify( this ); 
+    }
+}
 
 var fs = require('fs');
+var routePath = "/api-docs"
+var baseDir = __dirname;
+var swaggerPath = baseDir + "/index.html";
+var redocPath = baseDir + "/redoc.html";
+var defaultUI = "swagger";
+var validateUrl =  /^(http[s]?:\/\/){0,1}(www\.){0,1}[a-zA-Z0-9\.\-]+\.[a-zA-Z]{2,5}[\.]{0,1}/;
+var catchFile = {
+    
+};
 
 function SwaggerUIException(message) {
    this.message = message;
@@ -12,40 +26,49 @@ exports.route = function (server,options){
         throw new SwaggerUIException("options must be type of object");
     }
     
-    var sendFilePath = options.filePath;
-    if (!fs.existsSync(sendFilePath)) {
-        throw new SwaggerUIException("Swagger ui config file not found at this path " + sendFilePath);
+    //options.filePath deprecated
+    if((!options.filePath && !options.documentPath) && !options.documentUrl){
+        throw new SwaggerUIException("Swagger document absolute path or document url required");
+    }
+
+    if(options.documentUrl && !validateUrl.test(options.documentUrl)){
+        throw new SwaggerUIException("invalid document url please check the documentUrl field")
+    }
+
+    var sendFilePath = (options.filePath || options.documentPath); // options filePath deprecated
+    if (!options.documentUrl) {
+        if(!fs.existsSync(sendFilePath)){
+            throw new SwaggerUIException("Swagger ui config file not found at this path " + sendFilePath);
+        }
     }
     
-    var routePath = (options.routePath) ? options.routePath : '/api-docs'; //update the swagger ui route path
+    if(options.routePath){
+        routePath = options.routePath;
+    }
+
     try{
         if(options.auth instanceof Function){
             server.get(routePath,options.auth,serveUI); //authentication based route
         }else{
             server.get(routePath,serveUI); //public route
         }
+        
         //swagger config file must be public
-        server.get(routePath + '/swagger',function(req,res,next){
-            sendToClient(sendFilePath,res,next);
-        });
+        //route if documentUrl not defined
+        if(!options.documentUrl){
+            server.get(routePath + '/swagger',function(req,res,next){
+                sendToClient(sendFilePath,res,next);
+            });
+        }
     }catch(err){
         throw new SwaggerUIException("restify or express server required");
     }
-}
 
-var serveUI = function(req,res,next){
-    var ui = req.query.ui;
-    var send = './index.html';
-    switch(ui){
-        case "redoc":
-            send = './redoc.html'
-        break;
-        case "swagger":
-            send = './index.html';
-        break;
-    };
-    var sendFile = __dirname + "/" + send; // index and redoc html files sent by swagger-ui-express-restify
-    sendToClient(sendFile,res,next);
+    if(options.defaultUI){
+        defaultUI = setDefaultUI(options.defaultUI);
+    }
+    
+    loadHtmlFiles(options);
 }
 
 var sendToClient = function(path,res,next){
@@ -53,7 +76,9 @@ var sendToClient = function(path,res,next){
         if (err) {
             console.log(err);
             res.send(500);
-            return next();
+            if(next){
+                return next();
+            }
         }
         res.write(file);
         res.end();
@@ -61,4 +86,48 @@ var sendToClient = function(path,res,next){
             return next();
         }
     });
+}
+
+var serveUI = function(req,res,next){
+    var query = req.query.ui;
+    var html = (catchFile[query] || catchFile[defaultUI]);
+    res.writeHead(200, {
+        'Content-Length': Buffer.byteLength(html),
+        'Content-Type': 'text/html'
+    });
+    res.write(html);
+    res.end();
+}
+
+var loadHtmlFiles = function(options){
+    catchFile = {};
+    var swaggerFile = fs.readFileSync(swaggerPath, 'utf8');
+    var redocFile = fs.readFileSync(redocPath,'utf8');
+    catchFile.swagger = template(swaggerFile,options);
+    catchFile.redoc = template(redocFile,options);
+}
+
+var template = function(string,options){
+    string = string.replace('${title}',(options.title || "Documentation"));
+    string = string.replace('${documentUrl}',(options.documentUrl ||"./api-docs/swagger").quote());
+    string = string.replace('${customStyle}',(options.style || '\n'));
+    string = string.replace('${customScript}',(options.script || '\n'));
+    //string = string.replace(/\n|\r/g,"");
+    return string;
+}
+
+var setDefaultUI = function(ui){
+    let tempui;
+    switch(ui.toLocaleLowerCase()){
+        case "redoc":
+            tempui = "redoc"
+        break;
+        case "swagger":
+            tempui = "swagger";
+        break;
+        default:
+            tempui = "swagger";
+            console.log('\x1b[33m%s\x1b[0m',"Warning Message from swagger-ux : " + ui + " is not valid ui query (default ui will be serve).");
+    }
+    return tempui;
 }
