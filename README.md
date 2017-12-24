@@ -34,7 +34,7 @@ Redoc is OpenAPI/Swagger-generated API Reference Documentation and it provides a
 # Documentation UI
 By default, swagger-ux will serve `swagger-ui (3.6.1)`.
 You can switch the user interface of the documentation based on query parameter from the url
-- htpp://<app_host_url>:<port>/`api-docs`?ui=redoc
-- htpp://<app_host_url>:<port>/`api-docs`?ui=swagger
+- http://<app_host_url>:<port>/`api-docs`?ui=redoc
+- http://<app_host_url>:<port>/`api-docs`?ui=swagger
 # Requirement
 - **[express](https://www.npmjs.com/package/express "Express npm Page")** or **[restify](https://www.npmjs.com/package/restify "Restify npm page")**
